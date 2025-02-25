@@ -116,12 +116,12 @@ button:hover {
   margin-top: 30px;
   color: #fff;
 }
-.input-field input[title]:invalid {
-  border-bottom: 2px solid red;
-}
+
 .message {
-  color: red;
-  font-size: 0.8rem;
-  margin-top: 10px;
+  color: #ff0000;
+  font-size: 1.2rem;
   font-weight: 900;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
 }
