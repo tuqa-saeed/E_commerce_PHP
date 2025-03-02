@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Store user info in session
         setUserSession($user);
 
-        if ($user['user_type'] === 'superadmin' || $user['user_type'] === 'admin') {
+        if ($user['role'] === 'superadmin' || $user['role'] === 'admin') {
             header("Location: ../dashboard/index.php");
         } else {
             header("Location: ../home/index.php");
