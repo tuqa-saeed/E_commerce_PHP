@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';  // Database host (e.g., 127.0.0.1)
-$dbname = 'markethub';  // Your database name
+$dbname = 'ecommerce';  // Your database name
 $username = 'root';  // Your database username
 $password = '';  // Your database password
 
