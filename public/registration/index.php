@@ -24,11 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user) {
             // Store user info in session
 
-            // $_SESSION['user_id'] = $user['user_id'];
-            // $_SESSION['name'] = $user['name'];
-            // $_SESSION['email'] = $user['email'];
-            // $_SESSION['user_type'] = $user['user_type'];
-
             setUserSession($user);
 
             header("Location: ../home/index.php");

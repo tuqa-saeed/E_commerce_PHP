@@ -16,7 +16,7 @@ function insertUser($name, $email, $password)
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         // Prepare the SQL statement with placeholders
-        $sql = "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'customer')";
+        $sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')";
 
         // Execute the statement with the data array
         $stmt = $pdo->prepare($sql);
@@ -53,8 +53,8 @@ function checkUser($email, $password)
 }
 function setUserSession($user)
 {
-    $_SESSION['user_id'] = $user['user_id'];
+    $_SESSION['user_id'] = $user['id'];
     $_SESSION['name'] = $user['name'];
     $_SESSION['email'] = $user['email'];
-    $_SESSION['user_type'] = $user['user_type'];
+    $_SESSION['role'] = $user['role'];
 }
