@@ -191,8 +191,8 @@ $stmt->execute();
             </div>
           </div>
           <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Save Changes</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
           </div>
         </div>
       </form>
@@ -213,8 +213,8 @@ $stmt->execute();
             Are you sure you want to delete this user?
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           </div>
         </div>
       </form>
