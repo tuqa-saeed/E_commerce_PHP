@@ -78,3 +78,10 @@ button {
 .update-btn:hover {
   background-color: #0056b3;
 }
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #28a745;
+}
