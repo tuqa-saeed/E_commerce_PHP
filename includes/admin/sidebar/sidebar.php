@@ -13,7 +13,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="orders.php">
+              <a class="nav-link" href="../../admin/Order_management/view_orders.php">
                 <i class="bi bi-cart4"></i> Orders Management
               </a>
             </li>
@@ -28,7 +28,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="coupons.php">
+              <a class="nav-link" href="../../admin/coupons/coupons.php">
                 <i class="bi bi-ticket-detailed"></i> Coupon Management
               </a>
             </li>
