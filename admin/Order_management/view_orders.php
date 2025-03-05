@@ -1,5 +1,12 @@
 <?php
+
+session_start();
 include '../../includes/database/config.php';
+
+if ($_SESSION['role']!== 'admin' && $_SESSION['role'] !== 'superadmin') {
+  header("Location: ../../public/login/index.php");
+  exit();
+} 
 
 if (isset($_POST['order_id']) && isset($_POST['status'])) {
   $order_id = $_POST['order_id'];
