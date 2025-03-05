@@ -1,7 +1,7 @@
 <?php
 include '../../includes/database/config.php';
-// Handle updating order status
-if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST['status'])) {
+
+if (isset($_POST['order_id']) && isset($_POST['status'])) {
   $order_id = $_POST['order_id'];
   $new_status = $_POST['status'];
 
@@ -11,26 +11,29 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
   $stmt->bindParam(':order_id', $order_id, PDO::PARAM_INT);
   $stmt->execute();
 
+  // Prevent form resubmission issue
   header("Location: view_orders.php");
   exit;
 }
 
-// Handle filtering orders by status
+
 $status_filter = '';
 if (isset($_GET['status']) && in_array($_GET['status'], ['pending', 'processing', 'completed', 'cancelled'])) {
   $status_filter = $_GET['status'];
 }
 
-// SQL query to fetch orders with optional status filter
-$sql = "SELECT orders.id, users.name AS user_name, orders.total_price, orders.status, orders.created_at 
+$sql = "SELECT orders.id, users.name AS user_name, orders.total_price, orders.status, 
+                coupons.discount_value AS discount_value
         FROM orders
-        JOIN users ON orders.user_id = users.id";
+        JOIN users ON orders.user_id = users.id
+        LEFT JOIN coupons ON orders.coupon_id = coupons.id";
 
 if ($status_filter) {
   $sql .= " WHERE orders.status = :status";
 }
 
 $sql .= " ORDER BY orders.created_at DESC";
+
 
 $stmt = $pdo->prepare($sql);
 
@@ -56,7 +59,6 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="container mt-5">
     <h1>View Orders</h1>
 
-    <!-- Filter Form -->
     <form method="GET" action="view_orders.php" class="mb-4">
       <select name="status" class="form-control w-25 d-inline-block">
         <option value="">All Statuses</option>
@@ -75,8 +77,8 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <th>User Name</th>
           <th>Total Price</th>
           <th>Status</th>
-          <th>Date</th>
-          <th>Update Status</th>
+          <th>Discount</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -86,25 +88,80 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <td><?php echo $order['user_name']; ?></td>
             <td><?php echo '$' . number_format($order['total_price'], 2); ?></td>
             <td><?php echo ucfirst($order['status']); ?></td>
-            <td><?php echo date('Y-m-d H:i:s', strtotime($order['created_at'])); ?></td>
+            <td><?php echo isset($order['discount_value']) ? '$' . number_format($order['discount_value'], 2) : 'No Discount'; ?></td>
             <td>
-              <form method="POST" action="view_orders.php">
-                <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                <select name="status" class="form-control">
-                  <option value="pending" <?php echo ($order['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
-                  <option value="processing" <?php echo ($order['status'] == 'processing') ? 'selected' : ''; ?>>Processing</option>
-                  <option value="completed" <?php echo ($order['status'] == 'completed') ? 'selected' : ''; ?>>Completed</option>
-                  <option value="cancelled" <?php echo ($order['status'] == 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
-                </select>
-                <button type="submit" name="update_status" class="btn btn-success mt-2">Update</button>
-              </form>
+
+              <div class="btn-container">
+                <button class="btn btn-success mt-2"
+                  data-toggle="modal"
+                  data-target="#productModal"
+                  data-orderid="<?php echo $order['id']; ?>"
+                  data-status="<?php echo $order['status']; ?>">
+                  Update
+                </button>
+                <a href="view_order_products.php?order_id=<?php echo $order['id']; ?>" class="btn btn-info mt-2">
+                  Show Products
+                </a>
+              </div>
+
             </td>
+
           </tr>
         <?php endforeach; ?>
       </tbody>
     </table>
   </div>
 
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalLabel">Update</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="ordersStatus">
+            <form method="POST" action="view_orders.php">
+              <input type="hidden" name="order_id" value="">
+              <select name="status" class="form-control">
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button type="submit" class="btn btn-success mt-2" name="update_status">Update</button>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('#productModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        if (button.length) { // Ensure button exists
+          var orderId = button.data('orderid');
+          var status = button.data('status');
+
+          var modal = $(this);
+          modal.find('input[name="order_id"]').val(orderId);
+          modal.find('select[name="status"]').val(status);
+        }
+      });
+    });
+  </script>
 
 </body>
 
